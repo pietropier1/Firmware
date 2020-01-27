@@ -51,26 +51,26 @@
 class HoverThrustEstimator : public ModuleParams
 {
 public:
-	HoverThrustEstimator() :
-		ModuleParams(nullptr)
+	HoverThrustEstimator(ModuleParams *parent) :
+		ModuleParams(parent)
 	{
 	}
 	~HoverThrustEstimator() = default;
 
 	void reset();
 
-	void handleParameterUpdate();
+	virtual void updateParams() override;
 	void update(float dt);
 
 	void setThrust(float thrust) { _thrust = thrust; };
 	void setAccel(float accel) { _acc_z = accel; };
 
-	float getHoverThrustEstimate() const { return _hte.getHoverThrustEstimate(); }
+	float getHoverThrustEstimate() const { return _hover_thrust_ekf.getHoverThrustEstimate(); }
 
 private:
 	void publishStatus(ZeroOrderHoverThrustEkf::status &status);
 
-	ZeroOrderHoverThrustEkf _hte{};
+	ZeroOrderHoverThrustEkf _hover_thrust_ekf{};
 	float _acc_z{};
 	float _thrust{};
 
@@ -79,5 +79,5 @@ private:
 		(ParamFloat<px4::params::HTE_ACC_NOISE>) _param_hte_acc_noise
 	)
 
-	uORB::Publication<hover_thrust_estimator_s> _hte_pub{ORB_ID(hover_thrust_estimator)};
+	uORB::Publication<hover_thrust_estimator_s> _hover_thrust_ekf_pub{ORB_ID(hover_thrust_estimator)};
 };

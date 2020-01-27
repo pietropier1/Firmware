@@ -283,6 +283,7 @@ MulticopterPositionControl::MulticopterPositionControl(bool vtol) :
 	_vel_x_deriv(this, "VELD"),
 	_vel_y_deriv(this, "VELD"),
 	_vel_z_deriv(this, "VELD"),
+	_hover_thrust_estimator(this),
 	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": cycle time"))
 {
 	if (vtol) {
@@ -374,7 +375,6 @@ MulticopterPositionControl::parameters_update(bool force)
 		}
 
 		_flight_tasks.handleParameterUpdate();
-		_hover_thrust_estimator.handleParameterUpdate();
 
 		// initialize vectors from params and enforce constraints
 		_param_mpc_tko_speed.set(math::min(_param_mpc_tko_speed.get(), _param_mpc_z_vel_max_up.get()));

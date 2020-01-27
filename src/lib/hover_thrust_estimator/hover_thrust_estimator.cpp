@@ -45,16 +45,16 @@ void HoverThrustEstimator::reset()
 	_acc_z = 0.f;
 }
 
-void HoverThrustEstimator::handleParameterUpdate()
+void HoverThrustEstimator::updateParams()
 {
-	_hte.setProcessNoiseStdDev(_param_hte_ht_noise.get());
-	_hte.setMeasurementNoiseStdDev(_param_hte_acc_noise.get());
+	_hover_thrust_ekf.setProcessNoiseStdDev(_param_hte_ht_noise.get());
+	_hover_thrust_ekf.setMeasurementNoiseStdDev(_param_hte_acc_noise.get());
 }
 
 void HoverThrustEstimator::update(const float dt)
 {
-	_hte.predict(dt);
-	ZeroOrderHoverThrustEkf::status status = _hte.fuseAccZ(_acc_z, _thrust);
+	_hover_thrust_ekf.predict(dt);
+	ZeroOrderHoverThrustEkf::status status = _hover_thrust_ekf.fuseAccZ(_acc_z, _thrust);
 
 	publishStatus(status);
 }
@@ -69,5 +69,5 @@ void HoverThrustEstimator::publishStatus(ZeroOrderHoverThrustEkf::status &status
 	status_msg.accel_innov_var = status.innov_var;
 	status_msg.accel_innov_test_ratio = status.innov_test_ratio;
 	status_msg.accel_noise_var = status.accel_noise_var;
-	_hte_pub.publish(status_msg);
+	_hover_thrust_ekf_pub.publish(status_msg);
 }
