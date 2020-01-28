@@ -119,7 +119,7 @@ inline void ZeroOrderHoverThrustEkf::updateStateCovariance(const float K, const 
 inline void ZeroOrderHoverThrustEkf::updateMeasurementNoise(const float residual, const float H)
 {
 	const float alpha = _dt / (noise_learning_time_constant + _dt);
-	_R = math::constrain((1.f - alpha) * _R  + alpha * (residual * residual + H * _P * H), 1e-4f, 10.f);
+	_R = math::constrain((1.f - alpha) * _R  + alpha * (residual * residual + H * _P * H), 1e-4f, 60.f);
 }
 
 inline ZeroOrderHoverThrustEkf::status ZeroOrderHoverThrustEkf::packStatus(const float innov, const float innov_var,

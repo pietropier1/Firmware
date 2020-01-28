@@ -54,6 +54,8 @@ public:
 	HoverThrustEstimator(ModuleParams *parent) :
 		ModuleParams(parent)
 	{
+		ZeroOrderHoverThrustEkf::status status{};
+		publishStatus(status);
 	}
 	~HoverThrustEstimator() = default;
 

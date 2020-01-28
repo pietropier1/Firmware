@@ -47,13 +47,13 @@
  *
  * Bla
  *
- * @decimal 3
+ * @decimal 4
  * @min 0.0
  * @max 1.0
  * @unit normalized_thrust/s
  * @group Hover Thrust Estimator
  */
-PARAM_DEFINE_FLOAT(HTE_HT_NOISE, 0.01);
+PARAM_DEFINE_FLOAT(HTE_HT_NOISE, 0.0005);
 
 /**
  * Acceleration mesaurement noise

@@ -44,7 +44,7 @@
  * y[k] = h(u, x) + w with w ~ N(0, R)
  *
  * Where the measurement model and corresponding partial derivative (w.r.t. Th) are:
- * h(u, x) = g * T[k] / Th[k] - g
+ * h(u, x)[k] = g * T[k] / Th[k] - g
  * H[k] = -g * T[k] / Th[k]**2
  *
  * @author Mathieu Bresciani 	<brescianimathieu@gmail.com>
@@ -81,7 +81,7 @@ private:
 	float _hover_thr{0.5f};
 
 	float _gate_size{3.f};
-	float _P{0.2f};
+	float _P{0.01f};
 	float _Q{0.01f};
 	float _R{0.5f};
 	float _dt{0.02f};
