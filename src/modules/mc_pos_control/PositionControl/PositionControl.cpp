@@ -104,12 +104,10 @@ void PositionControl::setConstraints(const vehicle_constraints_s &constraints)
 
 bool PositionControl::update(const float dt)
 {
-	bool valid = true;
-
-	// x and y setpoints always come in pairs
-	valid = valid && (PX4_ISFINITE(_pos_sp(0)) == PX4_ISFINITE(_pos_sp(1)));
-	valid = valid && (PX4_ISFINITE(_vel_sp(0)) == PX4_ISFINITE(_vel_sp(1)));
-	valid = valid && (PX4_ISFINITE(_thr_sp(0)) == PX4_ISFINITE(_thr_sp(1)));
+	// x and y input setpoints always have to come in pairs
+	const bool valid = (PX4_ISFINITE(_pos_sp(0)) == PX4_ISFINITE(_pos_sp(1)))
+			   && (PX4_ISFINITE(_vel_sp(0)) == PX4_ISFINITE(_vel_sp(1)))
+			   && (PX4_ISFINITE(_thr_sp(0)) == PX4_ISFINITE(_thr_sp(1)));
 
 	_positionControl();
 	_velocityControl(dt);
@@ -125,9 +123,9 @@ void PositionControl::_positionControl()
 	// P-position controller
 	Vector3f vel_sp_position = (_pos_sp - _pos).emult(_gain_pos_p);
 	// Position and feed-forward velocity setpoints or position states being NAN results in them not having an influence
-	ControlMath::addIfNotNanVector(_vel_sp, vel_sp_position);
+	ControlMath::addIfNotNanVector3f(_vel_sp, vel_sp_position);
 	// make sure there are no NAN elements for further reference while constraining
-	ControlMath::setZeroIfNanVector(vel_sp_position);
+	ControlMath::setZeroIfNanVector3f(vel_sp_position);
 
 	// Constrain horizontal velocity by prioritizing the velocity component along the
 	// the desired position setpoint over the feed-forward term.
@@ -173,7 +171,7 @@ void PositionControl::_velocityControl(const float dt)
 	}
 
 	// Velocity and feed-forward thrust setpoints or velocity states being NAN results in them not having an influence
-	ControlMath::addIfNotNanVector(_thr_sp, thr_sp_velocity);
+	ControlMath::addIfNotNanVector3f(_thr_sp, thr_sp_velocity);
 
 	// The Thrust limits are negated and swapped due to NED-frame.
 	float uMax = -_lim_thr_min;
@@ -210,7 +208,7 @@ void PositionControl::_velocityControl(const float dt)
 	vel_error.xy() = Vector2f(vel_error) - (arw_gain * (thrust_sp_xy - Vector2f(_thr_sp)));
 
 	// Make sure integral doesn't get NAN
-	ControlMath::setZeroIfNanVector(vel_error);
+	ControlMath::setZeroIfNanVector3f(vel_error);
 	// Update integral part of velocity control
 	_vel_int += vel_error.emult(_gain_vel_i) * dt;
 

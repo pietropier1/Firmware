@@ -99,11 +99,11 @@ void addIfNotNan(float &setpoint, const float addition);
  * _addIfNotNan for Vector3f treating each element individually
  * @see _addIfNotNan
  */
-void addIfNotNanVector(matrix::Vector3f &setpoint, const matrix::Vector3f &addition);
+void addIfNotNanVector3f(matrix::Vector3f &setpoint, const matrix::Vector3f &addition);
 
 /**
  * Overwrites elements of a Vector3f which are NaN with zero
  * @param vector possibly containing NAN elements
  */
-void setZeroIfNanVector(matrix::Vector3f &vector);
+void setZeroIfNanVector3f(matrix::Vector3f &vector);
 }

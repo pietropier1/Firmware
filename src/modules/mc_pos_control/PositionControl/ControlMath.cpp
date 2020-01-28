@@ -229,17 +229,17 @@ void addIfNotNan(float &setpoint, const float addition)
 	// Addition is NAN or both are NAN, nothing to do
 }
 
-void addIfNotNanVector(Vector3f &setpoint, const Vector3f &addition)
+void addIfNotNanVector3f(Vector3f &setpoint, const Vector3f &addition)
 {
 	for (int i = 0; i < 3; i++) {
 		addIfNotNan(setpoint(i), addition(i));
 	}
 }
 
-void setZeroIfNanVector(Vector3f &vector)
+void setZeroIfNanVector3f(Vector3f &vector)
 {
 	// Adding zero vector overwrites elements that are NaN with zero
-	addIfNotNanVector(vector, Vector3f());
+	addIfNotNanVector3f(vector, Vector3f());
 }
 
 } // ControlMath

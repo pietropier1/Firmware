@@ -144,7 +144,7 @@ TEST_F(PositionControlBasicDirectionTest, PositionDirection)
 	_input_setpoint.x = .1f;
 	_input_setpoint.y = .1f;
 	_input_setpoint.z = -.1f;
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	checkDirection();
 }
 
@@ -153,7 +153,7 @@ TEST_F(PositionControlBasicDirectionTest, VelocityDirection)
 	_input_setpoint.vx = .1f;
 	_input_setpoint.vy = .1f;
 	_input_setpoint.vz = -.1f;
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	checkDirection();
 }
 
@@ -163,14 +163,14 @@ TEST_F(PositionControlBasicTest, TiltLimit)
 	_input_setpoint.y = 10.f;
 	_input_setpoint.z = -0.f;
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	Vector3f body_z = Quatf(_attitude.q_d).dcm_z();
 	float angle = acosf(body_z.dot(Vector3f(0.f, 0.f, 1.f)));
 	EXPECT_GT(angle, 0.f);
 	EXPECT_LE(angle, 1.f);
 
 	_contraints.tilt = .5f;
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	body_z = Quatf(_attitude.q_d).dcm_z();
 	angle = acosf(body_z.dot(Vector3f(0.f, 0.f, 1.f)));
 	EXPECT_GT(angle, 0.f);
@@ -183,7 +183,7 @@ TEST_F(PositionControlBasicTest, VelocityLimit)
 	_input_setpoint.y = 10.f;
 	_input_setpoint.z = -10.f;
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	Vector2f velocity_xy(_output_setpoint.vx, _output_setpoint.vy);
 	EXPECT_LE(velocity_xy.norm(), 1.f);
 	EXPECT_LE(abs(_output_setpoint.vz), 1.f);
@@ -195,7 +195,7 @@ TEST_F(PositionControlBasicTest, ThrustLimit)
 	_input_setpoint.y = 10.f;
 	_input_setpoint.z = -10.f;
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	EXPECT_FLOAT_EQ(_attitude.thrust_body[0], 0.f);
 	EXPECT_FLOAT_EQ(_attitude.thrust_body[1], 0.f);
 	EXPECT_LT(_attitude.thrust_body[2], -.1f);
@@ -208,7 +208,7 @@ TEST_F(PositionControlBasicTest, FailsafeInput)
 	_input_setpoint.thrust[0] = _input_setpoint.thrust[1] = 0.f;
 	_input_setpoint.acceleration[0] = _input_setpoint.acceleration[1] = 0.f;
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	EXPECT_FLOAT_EQ(_attitude.thrust_body[0], 0.f);
 	EXPECT_FLOAT_EQ(_attitude.thrust_body[1], 0.f);
 	EXPECT_LT(_output_setpoint.thrust[2], -.1f);
@@ -223,7 +223,7 @@ TEST_F(PositionControlBasicTest, InputCombinationsPosition)
 	_input_setpoint.y = .2f;
 	_input_setpoint.z = .3f;
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	EXPECT_FLOAT_EQ(_output_setpoint.x, .1f);
 	EXPECT_FLOAT_EQ(_output_setpoint.y, .2f);
 	EXPECT_FLOAT_EQ(_output_setpoint.z, .3f);
@@ -241,7 +241,7 @@ TEST_F(PositionControlBasicTest, InputCombinationsPositionVelocity)
 	_input_setpoint.vy = .2f;
 	_input_setpoint.z = .3f; // altitude
 
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 	// EXPECT_TRUE(isnan(_output_setpoint.x));
 	// EXPECT_TRUE(isnan(_output_setpoint.y));
 	EXPECT_FLOAT_EQ(_output_setpoint.z, .3f);
@@ -255,13 +255,13 @@ TEST_F(PositionControlBasicTest, InputCombinationsPositionVelocity)
 
 TEST_F(PositionControlBasicTest, SetpointValiditySimple)
 {
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 	_input_setpoint.x = .1f;
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 	_input_setpoint.y = .2f;
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 	_input_setpoint.thrust[2] = .3f;
-	EXPECT_EQ(runController(), true);
+	EXPECT_TRUE(runController());
 }
 
 TEST_F(PositionControlBasicTest, SetpointValidityAllCombinations)
@@ -312,18 +312,18 @@ TEST_F(PositionControlBasicTest, InvalidState)
 	PositionControlStates states{};
 	states.position(0) = NAN;
 	_position_control.setState(states);
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 
 	states.velocity(0) = NAN;
 	_position_control.setState(states);
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 
 	states.position(0) = 0.f;
 	_position_control.setState(states);
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 
 	states.velocity(0) = 0.f;
 	states.acceleration(1) = NAN;
 	_position_control.setState(states);
-	EXPECT_EQ(runController(), false);
+	EXPECT_FALSE(runController());
 }
