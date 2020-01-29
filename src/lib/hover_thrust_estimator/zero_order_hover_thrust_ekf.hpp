@@ -70,6 +70,8 @@ public:
 	ZeroOrderHoverThrustEkf() = default;
 	~ZeroOrderHoverThrustEkf() = default;
 
+	void resetAccelNoise() { _R = 5.f; };
+
 	void predict(float _dt);
 	status fuseAccZ(float acc_z, float thrust);
 
@@ -86,7 +88,7 @@ private:
 	float _gate_size{3.f};
 	float _P{0.01f}; // Initial hover thrust uncertainty variance (thrust^2)
 	float _Q{0.0005f}; // Hover thrust process noise (thrust/s)
-	float _R{5.0f}; // Acceleration variance (m^2/s^3)
+	float _R{5.f}; // Acceleration variance (m^2/s^3)
 	float _dt{0.02f};
 
 	float computeH(float thrust) const;
